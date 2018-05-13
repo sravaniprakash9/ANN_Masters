@@ -57,7 +57,7 @@ plotpc(net.IW{1},net.b{1});
 % this new point with the original training set shows how the network performs.
 % To distinguish it from the training set, color it red.
 
-x = [0.7; 1.2];
+x = [0; -0.5];
 y = net(x);
 plotpv(x,y);
 point = findobj(gca,'type','line');

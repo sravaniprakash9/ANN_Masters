@@ -4,18 +4,39 @@ close all
 
 %%%%%%%%%%%
 %algorlm.m
-% A script comparing performance of 'trainbr' and 'traingd'
-% traingd - batch gradient descent 
+% A script comparing performance of 'trainbr' and 'trainlm'
+% trainlm - batch gradient descent 
 % trainbr - Levenberg - Marquardt
 %%%%%%%%%%%
 
 %generation of examples and targets
-x=0:0.05:3*pi; y=sin(x.^2);
-p=con2seq(x); t=con2seq(y); % convert the data to a useful format
+x=0:0.05:3*pi;
+
+%Gaussian Noise
+y = sin(x.^2)+0.1/3*randn(size(x));
+
+%Random Noise
+% xNoise=rand(1,10,'double');
+% yNoise=zeros(1,10);
+% 
+% for i=1:10
+%     yNoise(i)=(xNoise(i).^2);
+% end
+% 
+% x=[xT xNoise];
+% y=[yT yNoise];
+
+pTrain=con2seq(x); tTrain=con2seq(y); % convert the data to a useful format
+
+p=pTrain(1:ceil(.7*size(pTrain,2)));
+pTest=pTrain(ceil(.7*size(pTrain,2)+1:size(pTrain,2)));
+
+t=tTrain(1:ceil(.7*size(tTrain,2)));
+tTest=tTrain(ceil(.7*size(tTrain,2)+1:size(tTrain,2)));
 
 %creation of networks
 net1=feedforwardnet(50,'trainbr');
-net2=feedforwardnet(50,'traingd');
+net2=feedforwardnet(50,'trainlm');
 net2.iw{1,1}=net1.iw{1,1};  %set the same weights and biases for the networks 
 net2.lw{2,1}=net1.lw{2,1};
 net2.b{1}=net1.b{1};
@@ -45,7 +66,7 @@ figure
 subplot(3,3,1);
 plot(x,y,'bx',x,cell2mat(a11),'r',x,cell2mat(a21),'g'); % plot the sine function and the output of the networks
 title('1 epoch');
-legend('target','trainbr','traingd','Location','north');
+legend('target','trainbr','trainlm','Location','north');
 subplot(3,3,2);
 postregm(cell2mat(a11),y); % perform a linear regression analysis and plot the result
 subplot(3,3,3);
@@ -54,7 +75,7 @@ postregm(cell2mat(a21),y);
 subplot(3,3,4);
 plot(x,y,'bx',x,cell2mat(a12),'r',x,cell2mat(a22),'g');
 title('15 epochs');
-legend('target','trainbr','traingd','Location','north');
+legend('target','trainbr','trainlm','Location','north');
 subplot(3,3,5);
 postregm(cell2mat(a12),y);
 subplot(3,3,6);
@@ -63,7 +84,7 @@ postregm(cell2mat(a22),y);
 subplot(3,3,7);
 plot(x,y,'bx',x,cell2mat(a13),'r',x,cell2mat(a23),'g');
 title('1000 epochs');
-legend('target','trainbr','traingd','Location','north');
+legend('target','trainbr','trainlm','Location','north');
 subplot(3,3,8);
 postregm(cell2mat(a13),y);
 subplot(3,3,9);
