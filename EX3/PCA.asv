@@ -1,0 +1,9 @@
+%load('threes.mat','-ascii')
+mean_3=mean(threes);
+
+cov_3=cov(threes);
+[v,d]=eig(cov_3);
+Diag=diag(d);
+%plot(Diag)
+%top 30 eigenvalues in 
+[v,d]=eigs(cov_3,30); 
